@@ -5,10 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>camera-test</title>
+  <style>
+    /* インカメで左右反転 */
+    video.active, canvas.active {
+        transform: rotateY(180deg);
+        -webkit-transform:rotateY(180deg);
+        -moz-transform:rotateY(180deg);
+    }
+  </style>
 </head>
 <body>
   <video id="video"></video>
   <script>
+    let cameraFacing = false;
+
     // Older browsers might not implement mediaDevices at all, so we set an empty object first
     if (navigator.mediaDevices === undefined) {
       navigator.mediaDevices = {};
@@ -38,6 +48,13 @@
       };
     }
 
+    const mode = cameraFacing ? "environment" : "user";
+    const video = document.querySelector("#video");
+    video.setAttribute('autoplay', '');
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    cameraFacing ? video.classList.remove("active") : video.classList.add("active");
+
     navigator.mediaDevices
       .getUserMedia({
         video: {
@@ -51,15 +68,10 @@
             ideal: 1080,
             max: 1440
           },
-          facingMode: 'user'
+          facingMode: mode
         }
       })
       .then(function(stream) {
-        const video = document.querySelector("#video");
-        video.setAttribute('autoplay', '');
-        video.setAttribute('muted', '');
-        video.setAttribute('playsinline', '');
-
         // Older browsers may not have srcObject
         if ("srcObject" in video) {
           video.srcObject = stream;
