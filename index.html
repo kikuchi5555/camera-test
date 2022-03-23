@@ -39,7 +39,21 @@
     }
 
     navigator.mediaDevices
-      .getUserMedia({ audio: true, video: true })
+      .getUserMedia({
+        video: {
+          width: {
+            min: 1280,
+            ideal: 1920,
+            max: 2560,
+          },
+          height: {
+            min: 720,
+            ideal: 1080,
+            max: 1440
+          },
+          facingMode: 'user'
+        }
+      })
       .then(function(stream) {
         const video = document.querySelector("#video");
         // Older browsers may not have srcObject
